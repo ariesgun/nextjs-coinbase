@@ -9,7 +9,7 @@ export default function Home() {
       <div className="h-4 items-center space-x-4">
         <MainNav className="mx-1" />
       </div>
-      <Divider className="my-4" />
+      <Divider className="my-4 max-w-8xl" />
 
       <div className="flex-1">
         <div className="flex flex-row items-center space-x-4">
@@ -28,7 +28,7 @@ export default function Home() {
         <Dashboard className="mx-auto py-8 text-center" />
       </div>
 
-      <Divider className="my-4" />
+      <Divider className="my-4 max-w-8xl" />
       <div className="text-sm font-medium transition-colors">
         Copyright © 2024
       </div>
