@@ -5,7 +5,7 @@ import { Image } from "@nextui-org/react";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col px-32 py-10 xl:px-64">
+    <main className="flex min-h-screen flex-col px-32 py-10 xl:px-64 max-w-screen-2xl mx-auto">
       <div className="h-4 items-center space-x-4">
         <MainNav className="mx-1" />
       </div>
