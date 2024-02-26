@@ -1,6 +1,6 @@
 "use client";
 
-import { LegacyRef, createRef, useEffect } from "react";
+import { LegacyRef, createRef, useEffect, useState } from "react";
 import * as d3 from "d3";
 import * as topojson from "topojson";
 import jsonInfo from "@/public/indonesia.json";
@@ -11,13 +11,13 @@ interface D3MapInterfaceProps {
 }
 
 export default function D3Map({ width, height }: D3MapInterfaceProps) {
+  const [selectedName, setSelectedName] = useState("");
   const ref: LegacyRef<SVGSVGElement> = createRef();
   let gref = createRef();
   let selectedRef = createRef();
 
   useEffect(() => {
     draw();
-    console.log(jsonInfo);
   });
 
   const zoom = d3.zoom().scaleExtent([1, 8]).on("zoom", zoomed);
@@ -35,12 +35,16 @@ export default function D3Map({ width, height }: D3MapInterfaceProps) {
   function clicked(event, d) {
     event.stopPropagation();
 
+    console.log(d.properties);
+
     if (selectedRef.current !== null) {
       selectedRef.current.transition().style("fill", "#444");
     }
 
     selectedRef.current = d3.select(this);
-    d3.select(this).transition().style("fill", "red");
+    selectedRef.current.transition().style("fill", "red");
+
+    setSelectedName(d.properties.name);
   }
 
   const draw = () => {
@@ -68,7 +72,6 @@ export default function D3Map({ width, height }: D3MapInterfaceProps) {
     gref
       .append("g")
       .attr("id", "subunits")
-      .attr("fill", "#444")
       .selectAll("path")
       .data(
         topojson.feature(jsonInfo, jsonInfo.objects.states_provinces).features,
@@ -76,6 +79,13 @@ export default function D3Map({ width, height }: D3MapInterfaceProps) {
       .enter()
       .append("path")
       .attr("d", path)
+      .attr("fill", function (d) {
+        if (d.properties.name === selectedName) {
+          return "red";
+        } else {
+          return "#444";
+        }
+      })
       .on("click", clicked);
 
     gref
@@ -100,5 +110,10 @@ export default function D3Map({ width, height }: D3MapInterfaceProps) {
     svg.call(zoom);
   };
 
-  return <svg width={width} height={height} ref={ref} />;
+  return (
+    <div>
+      <svg width={width} height={height} ref={ref} />
+      <p>{selectedName}</p>
+    </div>
+  );
 }
