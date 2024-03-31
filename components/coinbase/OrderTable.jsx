@@ -1,4 +1,7 @@
+"use client";
+
 import { capitalize } from "@/app/coinbase/utils";
+import { useCoinbase } from "@/lib/coinbase";
 import {
   Button,
   Dropdown,
@@ -238,7 +241,7 @@ const statusOptions = [
 const INITIAL_VISIBLE_COLUMNS = ["name", "amount", "balance", "cost"];
 
 export function OrderTable() {
-  const [orders, setOrders] = React.useState([]);
+  const { orders } = useCoinbase();
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [sortDescriptor, setSortDescriptor] = React.useState({
     column: "balance",
@@ -461,6 +464,54 @@ export function OrderTable() {
       </div>
     );
   }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+
+  const renderCellOrder = React.useCallback((data, columnKey) => {
+    console.log("Data, ", data);
+    console.log(columnKey);
+    const cellValue = data[columnKey];
+    console.log(cellValue);
+    switch (columnKey) {
+      case "name":
+        return (
+          <div className="flex flex-row items-center gap-x-4 my-2">
+            <p className="text-md">{data.product_id}</p>
+            <p className="text-md">{data.side}</p>
+          </div>
+        );
+      case "amount":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-small capitalize">{data.price}</p>
+            <p className="text-bold text-tiny capitalize text-default-400">
+              {data.size}
+            </p>
+          </div>
+        );
+      case "balance":
+        return <p className="text-md">{data.price * data.size}</p>;
+      case "cost":
+        return <p className="text-md">{data.trade_time}</p>;
+      // case "actions":
+      //   return (
+      //     <div className="relative flex justify-end items-center gap-2">
+      //       <Dropdown>
+      //         <DropdownTrigger>
+      //           <Button isIconOnly size="sm" variant="light">
+      //             <VerticalDotsIcon className="text-default-300" />
+      //           </Button>
+      //         </DropdownTrigger>
+      //         <DropdownMenu>
+      //           <DropdownItem>View</DropdownItem>
+      //           <DropdownItem onPress={onOpen}>Edit</DropdownItem>
+      //           <DropdownItem>Delete</DropdownItem>
+      //         </DropdownMenu>
+      //       </Dropdown>
+      //     </div>
+      //   );
+      default:
+        return cellValue;
+    }
+  }, []);
 
   return (
     <Table

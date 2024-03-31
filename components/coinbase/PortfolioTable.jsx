@@ -1,10 +1,14 @@
+"use client";
+
 import { capitalize } from "@/app/coinbase/utils";
+import { useCoinbase } from "@/lib/coinbase";
 import {
   Button,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Image,
   Input,
   Pagination,
   Table,
@@ -238,7 +242,8 @@ const statusOptions = [
 const INITIAL_VISIBLE_COLUMNS = ["name", "amount", "balance", "cost"];
 
 export function PortfolioTable() {
-  const [portfolios, setPortfolios] = React.useState([]);
+  const { portfolios } = useCoinbase();
+
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [sortDescriptor, setSortDescriptor] = React.useState({
     column: "balance",
@@ -461,6 +466,37 @@ export function PortfolioTable() {
       </div>
     );
   }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+
+  const renderCell = React.useCallback((data, columnKey) => {
+    // console.log("Data, ", data);
+    // console.log(columnKey);
+    const cellValue = data[columnKey];
+    // console.log(cellValue);
+    switch (columnKey) {
+      case "name":
+        return (
+          <div className="flex flex-row items-center gap-x-4 my-2">
+            <Image width={40} alt={data.asset} src={data.asset_img_url} />
+            <p className="text-md">{data.asset}</p>
+          </div>
+        );
+      case "amount":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-small capitalize">{cellValue}</p>
+            <p className="text-bold text-tiny capitalize text-default-400">
+              {data.total_balance_crypto}
+            </p>
+          </div>
+        );
+      case "balance":
+        return <p className="text-md">{data.total_balance_fiat}</p>;
+      case "cost":
+        return <p className="text-md">{data.cost_basis.value}</p>;
+      default:
+        return cellValue;
+    }
+  }, []);
 
   return (
     <Table

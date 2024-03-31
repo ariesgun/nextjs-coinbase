@@ -1,25 +1,9 @@
 "use client";
 
-import React from "react";
-import { Divider, Image } from "@nextui-org/react";
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  Link,
-  Button,
-} from "@nextui-org/react";
-import {
-  Input,
-  DropdownTrigger,
-  Dropdown,
-  DropdownMenu,
-  DropdownItem,
-  Chip,
-  User,
-  Pagination,
-} from "@nextui-org/react";
+import React, { useEffect } from "react";
+import { Divider } from "@nextui-org/react";
+import { Input, Link, Button } from "@nextui-org/react";
+
 import {
   Modal,
   ModalContent,
@@ -29,35 +13,17 @@ import {
   useDisclosure,
   Checkbox,
 } from "@nextui-org/react";
-import { Tabs, Tab } from "@nextui-org/react";
+
 import { MailIcon } from "./MailIcon.jsx";
 import { LockIcon } from "./LockIcon.jsx";
-import { PlusIcon } from "./PlusIcon";
-import { VerticalDotsIcon } from "./VerticalDotsIcon";
-import { SearchIcon } from "./SearchIcon";
-import { ChevronDownIcon } from "./ChevronDownIcon";
-import { columns, users, statusOptions } from "./data";
-import { capitalize } from "./utils";
-
-const statusColorMap = {
-  active: "success",
-  paused: "danger",
-  vacation: "warning",
-};
-
-const INITIAL_VISIBLE_COLUMNS = ["name", "amount", "balance", "cost"];
 
 // import {AcmeLogo} from "./AcmeLogo.jsx";
 
-import { useState, useEffect } from "react";
-import { Dashboard } from "@/components/dashboard.jsx";
 import { PortfolioTab } from "@/components/coinbase/PortfolioTab.jsx";
-import { PortfolioTable } from "@/components/coinbase/PortfolioTable.jsx";
-import { OrderTable } from "@/components/coinbase/OrderTable.jsx";
+import { useCoinbase } from "@/lib/coinbase.js";
 
 export default function Home() {
-  const [portfolios, setPortfolios] = useState([]);
-  const [orders, setOrders] = useState([]);
+  const { onPortfolioFetched, onOrdersFetched } = useCoinbase();
 
   useEffect(() => {
     // fetch("/api/accounts")
@@ -69,13 +35,12 @@ export default function Home() {
     fetch("/api/portfolio")
       .then((res) => res.json())
       .then((data) => {
-        setPortfolios(data.result.spot_positions);
-        // console.log("Portfolio: ", data.result.spot_positions);
+        onPortfolioFetched(data.result.spot_positions);
       });
     fetch("/api/orders")
       .then((res) => res.json())
       .then((data) => {
-        setOrders(data.result);
+        onOrdersFetched(data.result);
         console.log("Orders: ", data.result);
       });
   }, []);
