@@ -72,12 +72,11 @@ export default function Home() {
         setPortfolios(data.result.spot_positions);
         // console.log("Portfolio: ", data.result.spot_positions);
       });
-
     fetch("/api/orders")
       .then((res) => res.json())
       .then((data) => {
-        setOrders(data.result.fills);
-        console.log("Orders: ", data.result.fills);
+        setOrders(data.result);
+        console.log("Orders: ", data.result);
       });
   }, []);
 
