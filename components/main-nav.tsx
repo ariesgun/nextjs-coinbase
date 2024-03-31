@@ -15,6 +15,18 @@ export function MainNav({
         Home
       </Link>
       <Link
+        href="/coinbase"
+        className="text-md font-medium transition-colors hover:text-primary"
+      >
+        Coinbase
+      </Link>
+      <Link
+        href="/dashboard"
+        className="text-md font-medium transition-colors hover:text-primary"
+      >
+        Dashboard
+      </Link>
+      <Link
         href="/"
         className="text-md font-medium transition-colors hover:text-primary"
       >
