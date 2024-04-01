@@ -322,7 +322,7 @@ export function OrderTable() {
   }, []);
 
   const onCellAction = React.useCallback((value) => {
-    console.log(value);
+    // console.log(value);
     setCellSelected(value);
   }, []);
 
@@ -466,10 +466,10 @@ export function OrderTable() {
   }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
 
   const renderCellOrder = React.useCallback((data, columnKey) => {
-    console.log("Data, ", data);
-    console.log(columnKey);
+    // console.log("Data, ", data);
+    // console.log(columnKey);
     const cellValue = data[columnKey];
-    console.log(cellValue);
+    // console.log(cellValue);
     switch (columnKey) {
       case "name":
         return (
@@ -545,7 +545,9 @@ export function OrderTable() {
         {(item) => (
           <TableRow key={item.entry_id}>
             {(columnKey) => (
-              <TableCell>{renderCellOrder(item, columnKey)}</TableCell>
+              <TableCell className="py-1">
+                {renderCellOrder(item, columnKey)}
+              </TableCell>
             )}
           </TableRow>
         )}

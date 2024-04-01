@@ -18,269 +18,87 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { ChevronDownIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { ChevronDownIcon, SearchIcon } from "lucide-react";
 import React from "react";
 
 const columns = [
-  { name: "ID", uid: "id", sortable: true },
-  { name: "ASSET", uid: "name", sortable: true },
-  { name: "AMOUNT", uid: "amount", sortable: true },
-  { name: "BALANCE", uid: "balance", sortable: true },
+  { name: "ASSET", uid: "asset", sortable: true },
+  { name: "AMOUNT", uid: "total_balance_crypto", sortable: true },
+  { name: "BALANCE", uid: "total_balance_fiat", sortable: true },
   { name: "COST", uid: "cost" },
   { name: "ACTIONS", uid: "actions" },
 ];
 
-const users = [
-  {
-    id: 1,
-    name: "Tony Reichert",
-    role: "CEO",
-    team: "Management",
-    status: "active",
-    age: "29",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    email: "tony.reichert@example.com",
-  },
-  {
-    id: 2,
-    name: "Zoey Lang",
-    role: "Tech Lead",
-    team: "Development",
-    status: "paused",
-    age: "25",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-    email: "zoey.lang@example.com",
-  },
-  {
-    id: 3,
-    name: "Jane Fisher",
-    role: "Sr. Dev",
-    team: "Development",
-    status: "active",
-    age: "22",
-    avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-    email: "jane.fisher@example.com",
-  },
-  {
-    id: 4,
-    name: "William Howard",
-    role: "C.M.",
-    team: "Marketing",
-    status: "vacation",
-    age: "28",
-    avatar: "https://i.pravatar.cc/150?u=a048581f4e29026701d",
-    email: "william.howard@example.com",
-  },
-  {
-    id: 5,
-    name: "Kristen Copper",
-    role: "S. Manager",
-    team: "Sales",
-    status: "active",
-    age: "24",
-    avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026700d",
-    email: "kristen.cooper@example.com",
-  },
-  {
-    id: 6,
-    name: "Brian Kim",
-    role: "P. Manager",
-    team: "Management",
-    age: "29",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    email: "brian.kim@example.com",
-    status: "Active",
-  },
-  {
-    id: 7,
-    name: "Michael Hunt",
-    role: "Designer",
-    team: "Design",
-    status: "paused",
-    age: "27",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29027007d",
-    email: "michael.hunt@example.com",
-  },
-  {
-    id: 8,
-    name: "Samantha Brooks",
-    role: "HR Manager",
-    team: "HR",
-    status: "active",
-    age: "31",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e27027008d",
-    email: "samantha.brooks@example.com",
-  },
-  {
-    id: 9,
-    name: "Frank Harrison",
-    role: "F. Manager",
-    team: "Finance",
-    status: "vacation",
-    age: "33",
-    avatar: "https://i.pravatar.cc/150?img=4",
-    email: "frank.harrison@example.com",
-  },
-  {
-    id: 10,
-    name: "Emma Adams",
-    role: "Ops Manager",
-    team: "Operations",
-    status: "active",
-    age: "35",
-    avatar: "https://i.pravatar.cc/150?img=5",
-    email: "emma.adams@example.com",
-  },
-  {
-    id: 11,
-    name: "Brandon Stevens",
-    role: "Jr. Dev",
-    team: "Development",
-    status: "active",
-    age: "22",
-    avatar: "https://i.pravatar.cc/150?img=8",
-    email: "brandon.stevens@example.com",
-  },
-  {
-    id: 12,
-    name: "Megan Richards",
-    role: "P. Manager",
-    team: "Product",
-    status: "paused",
-    age: "28",
-    avatar: "https://i.pravatar.cc/150?img=10",
-    email: "megan.richards@example.com",
-  },
-  {
-    id: 13,
-    name: "Oliver Scott",
-    role: "S. Manager",
-    team: "Security",
-    status: "active",
-    age: "37",
-    avatar: "https://i.pravatar.cc/150?img=12",
-    email: "oliver.scott@example.com",
-  },
-  {
-    id: 14,
-    name: "Grace Allen",
-    role: "M. Specialist",
-    team: "Marketing",
-    status: "active",
-    age: "30",
-    avatar: "https://i.pravatar.cc/150?img=16",
-    email: "grace.allen@example.com",
-  },
-  {
-    id: 15,
-    name: "Noah Carter",
-    role: "IT Specialist",
-    team: "I. Technology",
-    status: "paused",
-    age: "31",
-    avatar: "https://i.pravatar.cc/150?img=15",
-    email: "noah.carter@example.com",
-  },
-  {
-    id: 16,
-    name: "Ava Perez",
-    role: "Manager",
-    team: "Sales",
-    status: "active",
-    age: "29",
-    avatar: "https://i.pravatar.cc/150?img=20",
-    email: "ava.perez@example.com",
-  },
-  {
-    id: 17,
-    name: "Liam Johnson",
-    role: "Data Analyst",
-    team: "Analysis",
-    status: "active",
-    age: "28",
-    avatar: "https://i.pravatar.cc/150?img=33",
-    email: "liam.johnson@example.com",
-  },
-  {
-    id: 18,
-    name: "Sophia Taylor",
-    role: "QA Analyst",
-    team: "Testing",
-    status: "active",
-    age: "27",
-    avatar: "https://i.pravatar.cc/150?img=29",
-    email: "sophia.taylor@example.com",
-  },
-  {
-    id: 19,
-    name: "Lucas Harris",
-    role: "Administrator",
-    team: "Information Technology",
-    status: "paused",
-    age: "32",
-    avatar: "https://i.pravatar.cc/150?img=50",
-    email: "lucas.harris@example.com",
-  },
-  {
-    id: 20,
-    name: "Mia Robinson",
-    role: "Coordinator",
-    team: "Operations",
-    status: "active",
-    age: "26",
-    avatar: "https://i.pravatar.cc/150?img=45",
-    email: "mia.robinson@example.com",
-  },
+const INITIAL_VISIBLE_COLUMNS = [
+  "asset",
+  "total_balance_crypto",
+  "total_balance_fiat",
+  "cost",
 ];
-
-const statusOptions = [
-  { name: "Active", uid: "active" },
-  { name: "Paused", uid: "paused" },
-  { name: "Vacation", uid: "vacation" },
-];
-
-const INITIAL_VISIBLE_COLUMNS = ["name", "amount", "balance", "cost"];
 
 export function PortfolioTable() {
   const { portfolios } = useCoinbase();
 
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [sortDescriptor, setSortDescriptor] = React.useState({
-    column: "balance",
-    direction: "descending",
+    column: "asset",
+    direction: "ascending",
   });
   const [visibleColumns, setVisibleColumns] = React.useState(
     new Set(INITIAL_VISIBLE_COLUMNS),
   );
 
   const [filterValue, setFilterValue] = React.useState("");
-  const [statusFilter, setStatusFilter] = React.useState("all");
 
   const hasSearchFilter = Boolean(filterValue);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const [page, setPage] = React.useState(1);
 
+  const aggregatedItems = React.useMemo(() => {
+    const aggregatedData = portfolios.reduce((acc, curr) => {
+      // Check if the id already exists in the accumulator
+      if (acc[curr.asset]) {
+        // If the id exists, push the current item to the array
+        // acc[curr.asset].push(curr);
+        let item = acc[curr.asset];
+        item.allocation += curr.allocation;
+        item.total_balance_crypto += curr.total_balance_crypto;
+        item.total_balance_fiat += curr.total_balance_fiat;
+        item.cost_basis.value = String(
+          Number(item.cost_basis.value) + Number(item.cost_basis.value),
+        );
+        acc[curr.asset] = item;
+      } else {
+        // If the id doesn't exist, create a new array with the current item
+        acc[curr.asset] = curr;
+      }
+      return acc;
+    }, {});
+
+    return Object.values(aggregatedData);
+  }, [sortDescriptor, portfolios]);
+
+  const sortedItems = React.useMemo(() => {
+    return [...aggregatedItems].sort((a, b) => {
+      const first = a[sortDescriptor.column];
+      const second = b[sortDescriptor.column];
+      const cmp = first < second ? -1 : first > second ? 1 : 0;
+
+      return sortDescriptor.direction === "descending" ? -cmp : cmp;
+    });
+  }, [sortDescriptor, aggregatedItems]);
+
   const filteredItems = React.useMemo(() => {
-    let filteredUsers = [...users];
+    let filteredPortfolios = [...sortedItems];
 
     if (hasSearchFilter) {
-      filteredUsers = filteredUsers.filter((user) =>
-        user.name.toLowerCase().includes(filterValue.toLowerCase()),
-      );
-    }
-    if (
-      statusFilter !== "all" &&
-      Array.from(statusFilter).length !== statusOptions.length
-    ) {
-      filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes(user.status),
+      filteredPortfolios = filteredPortfolios.filter((portfolio) =>
+        portfolio.asset.toLowerCase().includes(filterValue.toLowerCase()),
       );
     }
 
-    return filteredUsers;
-  }, [users, filterValue, statusFilter]);
-
-  const pages = Math.ceil(filteredItems.length / rowsPerPage);
+    return filteredPortfolios;
+  }, [sortedItems, filterValue]);
 
   const items = React.useMemo(() => {
     const start = (page - 1) * rowsPerPage;
@@ -288,6 +106,8 @@ export function PortfolioTable() {
 
     return filteredItems.slice(start, end);
   }, [page, filteredItems, rowsPerPage]);
+
+  const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
   const headerColumns = React.useMemo(() => {
     if (visibleColumns === "all") return columns;
@@ -324,7 +144,7 @@ export function PortfolioTable() {
   }, []);
 
   const onCellAction = React.useCallback((value) => {
-    console.log(value);
+    // console.log(value);
     setCellSelected(value);
   }, []);
 
@@ -336,83 +156,56 @@ export function PortfolioTable() {
   const topContent = React.useMemo(() => {
     return (
       <div className="flex flex-col gap-4">
-        <div className="flex justify-between gap-3 items-end">
+        <div className="flex justify-between gap-3 items-center">
           <Input
             isClearable
             className="w-full sm:max-w-[44%]"
             placeholder="Search by name..."
             startContent={<SearchIcon />}
             value={filterValue}
+            size="sm"
             onClear={() => onClear()}
             onValueChange={onSearchChange}
           />
-          <div className="flex gap-3">
-            <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
-                <Button
-                  endContent={<ChevronDownIcon className="text-small" />}
-                  variant="flat"
-                >
-                  Status
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Table Columns"
-                closeOnSelect={false}
-                selectedKeys={statusFilter}
-                selectionMode="multiple"
-                onSelectionChange={setStatusFilter}
+          <Dropdown>
+            <DropdownTrigger className="hidden sm:flex">
+              <Button
+                endContent={<ChevronDownIcon className="text-small" />}
+                variant="flat"
               >
-                {statusOptions.map((status) => (
-                  <DropdownItem key={status.uid} className="capitalize">
-                    {capitalize(status.name)}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-            <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
-                <Button
-                  endContent={<ChevronDownIcon className="text-small" />}
-                  variant="flat"
-                >
-                  Columns
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Table Columns"
-                closeOnSelect={false}
-                selectedKeys={visibleColumns}
-                selectionMode="multiple"
-                onSelectionChange={setVisibleColumns}
-              >
-                {columns.map((column) => (
-                  <DropdownItem key={column.uid} className="capitalize">
-                    {capitalize(column.name)}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-            <Button color="primary" endContent={<PlusIcon />}>
-              Add New
-            </Button>
-          </div>
+                Columns
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              disallowEmptySelection
+              aria-label="Table Columns"
+              closeOnSelect={false}
+              selectedKeys={visibleColumns}
+              selectionMode="multiple"
+              onSelectionChange={setVisibleColumns}
+            >
+              {columns.map((column) => (
+                <DropdownItem key={column.uid} className="capitalize">
+                  {capitalize(column.name)}
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
-            Total {users.length} users
+            Total {portfolios.length} assets
           </span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
             <select
               className="bg-transparent outline-none text-default-400 text-small"
               onChange={onRowsPerPageChange}
+              value={rowsPerPage}
             >
               <option value="5">5</option>
-              <option value="10">10</option>
               <option value="15">15</option>
+              <option value="30">30</option>
             </select>
           </label>
         </div>
@@ -420,10 +213,9 @@ export function PortfolioTable() {
     );
   }, [
     filterValue,
-    statusFilter,
     visibleColumns,
     onRowsPerPageChange,
-    users.length,
+    portfolios.length,
     onSearchChange,
     hasSearchFilter,
   ]);
@@ -468,31 +260,44 @@ export function PortfolioTable() {
   }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
 
   const renderCell = React.useCallback((data, columnKey) => {
-    // console.log("Data, ", data);
-    // console.log(columnKey);
     const cellValue = data[columnKey];
-    // console.log(cellValue);
+
     switch (columnKey) {
-      case "name":
+      case "asset":
         return (
           <div className="flex flex-row items-center gap-x-4 my-2">
-            <Image width={40} alt={data.asset} src={data.asset_img_url} />
-            <p className="text-md">{data.asset}</p>
+            <Image width={30} alt={data.asset} src={data.asset_img_url} />
+            <p className="text-sm">{data.asset}</p>
           </div>
         );
-      case "amount":
+      case "total_balance_crypto":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-small capitalize">{cellValue}</p>
-            <p className="text-bold text-tiny capitalize text-default-400">
-              {data.total_balance_crypto}
+          </div>
+        );
+      case "total_balance_fiat":
+        return (
+          <div className="flex gap-x-2">
+            <p className="text-bold text-small capitalize">
+              {(Math.round(data.total_balance_fiat * 10000) / 10000).toFixed(4)}
+            </p>
+            <p className="text-bold capitalize text-default-500">
+              {data.cost_basis.currency}
             </p>
           </div>
         );
-      case "balance":
-        return <p className="text-md">{data.total_balance_fiat}</p>;
       case "cost":
-        return <p className="text-md">{data.cost_basis.value}</p>;
+        return (
+          <div className="flex gap-x-2">
+            <p className="text-bold text-small capitalize">
+              {(Math.round(data.cost_basis.value * 10000) / 10000).toFixed(4)}
+            </p>
+            <p className="text-bold capitalize text-default-500">
+              {data.cost_basis.currency}
+            </p>
+          </div>
+        );
       default:
         return cellValue;
     }
@@ -526,11 +331,13 @@ export function PortfolioTable() {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={"No data found"} items={portfolios}>
+      <TableBody emptyContent={"No data found"} items={items}>
         {(item) => (
           <TableRow key={item.account_uuid}>
             {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey)}</TableCell>
+              <TableCell className="py-2">
+                {renderCell(item, columnKey)}
+              </TableCell>
             )}
           </TableRow>
         )}
