@@ -1,7 +1,7 @@
 import { sign_req } from "../../lib/jwtsign";
 
 const url = "api.coinbase.com";
-const request_path = "/api/v3/brokerage/accounts";
+const request_path = "/api/v3/brokerage/portfolios";
 
 export default async function handler(req, res) {
   let result = [];
@@ -25,7 +25,7 @@ export default async function handler(req, res) {
       return res.json();
     })
     .then((data) => {
-      result = data.breakdown;
+      result = data;
     })
     .catch((error) => {
       console.error("Error ", error);

@@ -19,19 +19,20 @@ import { LockIcon } from "./LockIcon.jsx";
 
 // import {AcmeLogo} from "./AcmeLogo.jsx";
 
+import { AccountsList } from "@/components/coinbase/AccountsList.jsx";
 import { PortfolioTab } from "@/components/coinbase/PortfolioTab.jsx";
 import { useCoinbase } from "@/lib/coinbase.js";
 
 export default function Home() {
-  const { onPortfolioFetched, onOrdersFetched } = useCoinbase();
+  const { onAccountsFetched, onPortfolioFetched, onOrdersFetched } =
+    useCoinbase();
 
   useEffect(() => {
-    // fetch("/api/accounts")
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setData(data);
-    //     console.log("Data: ", data);
-    //   });
+    fetch("/api/accounts")
+      .then((res) => res.json())
+      .then((data) => {
+        onAccountsFetched(data.result.portfolios);
+      });
     fetch("/api/portfolio")
       .then((res) => res.json())
       .then((data) => {
@@ -81,14 +82,15 @@ export default function Home() {
         </div>
 
         <Divider className="my-4" />
-
-        <div className="space-y-1 mb-8">
+        <div className="space-y-1 mb-4">
           <h4 className="text-medium font-medium">Coinbase Dashboard</h4>
           <p className="text-small text-default-400">
             Easily track your crypto portfolio. 🚀🌕
           </p>
         </div>
+        <Divider className="mb-4" />
 
+        <AccountsList />
         <PortfolioTab />
       </div>
       <Modal
