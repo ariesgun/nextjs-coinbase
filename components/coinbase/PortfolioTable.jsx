@@ -19,6 +19,7 @@ import {
   TableRow,
 } from "@nextui-org/react";
 import { ChevronDownIcon, SearchIcon } from "lucide-react";
+import { Checkbox } from "@nextui-org/react";
 import React from "react";
 
 const columns = [
@@ -53,6 +54,8 @@ export function PortfolioTable() {
   const hasSearchFilter = Boolean(filterValue);
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const [page, setPage] = React.useState(1);
+
+  const [showSmallBalances, setShowSmallBalances] = React.useState(false);
 
   const aggregatedItems = React.useMemo(() => {
     const aggregatedData = portfolios.reduce((acc, curr) => {
@@ -97,8 +100,14 @@ export function PortfolioTable() {
       );
     }
 
+    if (!showSmallBalances) {
+      filteredPortfolios = filteredPortfolios.filter(
+        (portfolio) => portfolio.total_balance_fiat > 0.01,
+      );
+    }
+
     return filteredPortfolios;
-  }, [sortedItems, filterValue]);
+  }, [sortedItems, showSmallBalances, filterValue]);
 
   const items = React.useMemo(() => {
     const start = (page - 1) * rowsPerPage;
@@ -156,41 +165,52 @@ export function PortfolioTable() {
   const topContent = React.useMemo(() => {
     return (
       <div className="flex flex-col gap-4">
-        <div className="flex justify-between gap-3 items-center">
-          <Input
-            isClearable
-            className="w-full sm:max-w-[44%]"
-            placeholder="Search by name..."
-            startContent={<SearchIcon />}
-            value={filterValue}
-            size="sm"
-            onClear={() => onClear()}
-            onValueChange={onSearchChange}
-          />
-          <Dropdown>
-            <DropdownTrigger className="hidden sm:flex">
-              <Button
-                endContent={<ChevronDownIcon className="text-small" />}
-                variant="flat"
-              >
-                Columns
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu
-              disallowEmptySelection
-              aria-label="Table Columns"
-              closeOnSelect={false}
-              selectedKeys={visibleColumns}
-              selectionMode="multiple"
-              onSelectionChange={setVisibleColumns}
+        <div className="flex justify-between items-center">
+          <div className="w-2/3">
+            <Input
+              isClearable
+              className="w-full sm:max-w-[44%]"
+              placeholder="Search by name..."
+              startContent={<SearchIcon />}
+              value={filterValue}
+              size="sm"
+              onClear={() => onClear()}
+              onValueChange={onSearchChange}
+            />
+          </div>
+          <div className="flex gap-5 items-center">
+            <Checkbox
+              size="sm"
+              isSelected={showSmallBalances}
+              onValueChange={setShowSmallBalances}
             >
-              {columns.map((column) => (
-                <DropdownItem key={column.uid} className="capitalize">
-                  {capitalize(column.name)}
-                </DropdownItem>
-              ))}
-            </DropdownMenu>
-          </Dropdown>
+              {"Show small balances (< $0.01)"}
+            </Checkbox>
+            <Dropdown>
+              <DropdownTrigger className="hidden sm:flex">
+                <Button
+                  endContent={<ChevronDownIcon className="text-small" />}
+                  variant="flat"
+                >
+                  Columns
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="Table Columns"
+                closeOnSelect={false}
+                selectedKeys={visibleColumns}
+                selectionMode="multiple"
+                onSelectionChange={setVisibleColumns}
+              >
+                {columns.map((column) => (
+                  <DropdownItem key={column.uid} className="capitalize">
+                    {capitalize(column.name)}
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </Dropdown>
+          </div>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
@@ -217,6 +237,7 @@ export function PortfolioTable() {
     onRowsPerPageChange,
     portfolios.length,
     onSearchChange,
+    showSmallBalances,
     hasSearchFilter,
   ]);
 
@@ -257,7 +278,14 @@ export function PortfolioTable() {
         </div>
       </div>
     );
-  }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+  }, [
+    selectedKeys,
+    items.length,
+    page,
+    pages,
+    showSmallBalances,
+    hasSearchFilter,
+  ]);
 
   const renderCell = React.useCallback((data, columnKey) => {
     const cellValue = data[columnKey];
