@@ -1,6 +1,7 @@
 import { Tab, Tabs } from "@nextui-org/react";
 import { PortfolioTable } from "./PortfolioTable";
 import { OrderTable } from "./OrderTable";
+import { SummaryTable } from "./SummaryTable";
 
 export function PortfolioTab() {
   return (
@@ -17,6 +18,16 @@ export function PortfolioTab() {
           tabContent: "group-data-[selected=true]:text-[#06b6d4]",
         }}
       >
+        <Tab
+          key="Summary"
+          title={
+            <div className="flex items-center space-x-2">
+              <span>Summary</span>
+            </div>
+          }
+        >
+          <SummaryTable />
+        </Tab>
         <Tab
           key="Portfolio"
           title={
