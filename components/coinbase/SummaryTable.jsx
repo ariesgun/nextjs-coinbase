@@ -130,7 +130,11 @@ export function SummaryTable() {
   };
 
   const renderAccordianBody = (data) => {
-    return <div>Hello {data.asset}</div>;
+    return (
+      <div className="bg-cover bg-center bg-slate-100 rounded-lg w-full py-5 px-2">
+        Hello {data.asset}
+      </div>
+    );
   };
 
   return (
