@@ -1,7 +1,11 @@
-"use client";
-
 import { useCoinbase } from "@/lib/coinbase";
-import { Accordion, AccordionItem, Checkbox, Image } from "@nextui-org/react";
+import {
+  Accordion,
+  AccordionItem,
+  Checkbox,
+  Image,
+  Skeleton,
+} from "@nextui-org/react";
 import React from "react";
 
 export function SummaryTable() {
@@ -85,7 +89,9 @@ export function SummaryTable() {
           </div>
           <div>
             <p className="text-bold text-base capitalize text-default-500">
-              {data.total_balance_crypto}
+              {(Math.round(data.total_balance_crypto * 10000) / 10000).toFixed(
+                4,
+              )}
             </p>
           </div>
         </div>
@@ -138,17 +144,35 @@ export function SummaryTable() {
           {"Show small balances (< $0.01)"}
         </Checkbox>
       </div>
-      <Accordion showDivider={false} selectionMode="multiple">
-        {filteredItems.map((item) => (
-          <AccordionItem
-            key={item.account_uuid}
-            aria-label={item.asset}
-            title={renderRow(item)}
-          >
-            {renderAccordianBody(item)}
-          </AccordionItem>
-        ))}
-      </Accordion>
+      {portfolios.length > 0 ? (
+        <>
+          <Accordion showDivider={false} selectionMode="multiple">
+            {filteredItems.map((item) => (
+              <AccordionItem
+                key={item.account_uuid}
+                aria-label={item.asset}
+                title={renderRow(item)}
+              >
+                {renderAccordianBody(item)}
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </>
+      ) : (
+        <div className="my-4 ">
+          {Array.from({ length: 8 }, (_, index) => (
+            <div className="w-full flex items-center gap-5 my-5">
+              <div>
+                <Skeleton className="flex rounded-full w-20 h-20" />
+              </div>
+              <div className="w-full flex flex-col gap-4">
+                <Skeleton className="h-4 w-3/4 rounded-lg" />
+                <Skeleton className="h-4 w-full rounded-lg" />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </>
   );
 }
