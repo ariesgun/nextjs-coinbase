@@ -9,7 +9,7 @@ import {
 import React from "react";
 
 export function SummaryTable() {
-  const { portfolios } = useCoinbase();
+  const { orders, portfolios } = useCoinbase();
 
   const [sortDescriptor, setSortDescriptor] = React.useState({
     column: "asset",
@@ -74,6 +74,22 @@ export function SummaryTable() {
     return filteredPortfolios;
   }, [sortedItems, showSmallBalances, filterValue]);
 
+  const filteredOrders = React.useMemo(() => {
+    let portfoliosOrdersDict = {};
+
+    sortedItems.map((item) => {
+      let filteredOrders = orders.filter((order) => {
+        return order.product_id.includes(item.asset);
+      });
+
+      portfoliosOrdersDict[item.asset] = filteredOrders;
+    });
+
+    console.log(portfoliosOrdersDict);
+
+    return portfoliosOrdersDict;
+  }, [sortedItems, orders]);
+
   const renderRow = (data) => {
     return (
       <div className="flex flex-row w-full items-center gap-x-4 my-2 mx-auto">
@@ -131,8 +147,48 @@ export function SummaryTable() {
 
   const renderAccordianBody = (data) => {
     return (
-      <div className="bg-cover bg-center bg-slate-100 rounded-lg w-full py-5 px-2">
-        Hello {data.asset}
+      <div className="bg-cover bg-center bg-slate-100 rounded-lg w-full py-5 px-8">
+        {filteredOrders[data.asset].length > 0 ? (
+          <>
+            <div className="flex flex-row w-full items-center gap-5">
+              <div className="flex-[1_1_0%] py-1">
+                <p className="font-bold">Timestamp</p>
+              </div>
+              <div className="flex-none w-40">
+                <p className="font-bold">Type</p>
+              </div>
+              <div className="flex-none w-20">
+                <p className="font-bold">Size</p>
+              </div>
+              <div className="flex-none w-40">
+                <p className="font-bold">Price</p>
+              </div>
+              <div className="flex-1">
+                <p className="font-bold">Total</p>
+              </div>
+            </div>
+            {filteredOrders[data.asset].map((item) => (
+              <div className="flex flex-row w-full items-center gap-5">
+                <div className="flex-[1_1_0%] py-1">{item.trade_time}</div>
+                <div className="flex-none w-40">
+                  {item.product_id} {item.side}
+                </div>
+                <div className="flex-none w-20">{item.size}</div>
+                <div className="flex-none w-40">
+                  {item.price} {data.cost_basis.currency}
+                </div>
+                <div className="flex-1">
+                  {(Math.round(item.price * item.size * 10000) / 10000).toFixed(
+                    2,
+                  )}{" "}
+                  {data.cost_basis.currency}
+                </div>
+              </div>
+            ))}
+          </>
+        ) : (
+          <p>No order history</p>
+        )}
       </div>
     );
   };
