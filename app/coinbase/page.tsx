@@ -24,8 +24,12 @@ import { PortfolioTab } from "@/components/coinbase/PortfolioTab.jsx";
 import { useCoinbase } from "@/lib/coinbase.js";
 
 export default function Home() {
-  const { onAccountsFetched, onPortfolioFetched, onOrdersFetched } =
-    useCoinbase();
+  const {
+    onAccountsFetched,
+    onPortfolioFetched,
+    onOrdersFetched,
+    onProductsFetched,
+  } = useCoinbase();
 
   useEffect(() => {
     fetch("/api/accounts")
@@ -42,7 +46,11 @@ export default function Home() {
       .then((res) => res.json())
       .then((data) => {
         onOrdersFetched(data.result);
-        console.log("Orders: ", data.result);
+      });
+    fetch("/api/products/")
+      .then((res) => res.json())
+      .then((data) => {
+        onProductsFetched(data.result.products);
       });
   }, []);
 
