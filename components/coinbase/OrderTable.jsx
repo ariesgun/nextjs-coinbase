@@ -69,7 +69,7 @@ export function OrderTable() {
     }
 
     return filteredOrders;
-  }, [orders, filterValue]);
+  }, [orders, filterValue, hasSearchFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -192,7 +192,7 @@ export function OrderTable() {
     onRowsPerPageChange,
     orders.length,
     onSearchChange,
-    hasSearchFilter,
+    onClear,
   ]);
 
   const bottomContent = React.useMemo(() => {
@@ -232,7 +232,14 @@ export function OrderTable() {
         </div>
       </div>
     );
-  }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+  }, [
+    selectedKeys,
+    page,
+    pages,
+    onNextPage,
+    onPreviousPage,
+    filteredItems.length,
+  ]);
 
   const renderCell = React.useCallback((data, columnKey) => {
     // console.log("Data, ", data);

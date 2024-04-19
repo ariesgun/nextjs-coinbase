@@ -11,7 +11,7 @@ import {
   Checkbox,
 } from "@nextui-org/react";
 
-import { AccountsList } from "@/components/coinbase/AccountsList.tsx";
+import { AccountsList } from "@/components/coinbase/AccountsList.jsx";
 import { PortfolioTab } from "@/components/coinbase/PortfolioTab.jsx";
 import { CoinbaseNavbar } from "@/components/coinbase/Navbar.jsx";
 import { createClient } from "@/utils/supabase/server";

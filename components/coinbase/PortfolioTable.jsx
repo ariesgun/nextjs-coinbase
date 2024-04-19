@@ -79,7 +79,7 @@ export function PortfolioTable() {
     }, {});
 
     return Object.values(aggregatedData);
-  }, [sortDescriptor, portfolios]);
+  }, [portfolios]);
 
   const sortedItems = React.useMemo(() => {
     return [...aggregatedItems].sort((a, b) => {
@@ -107,7 +107,7 @@ export function PortfolioTable() {
     }
 
     return filteredPortfolios;
-  }, [sortedItems, showSmallBalances, filterValue]);
+  }, [sortedItems, showSmallBalances, filterValue, hasSearchFilter]);
 
   const items = React.useMemo(() => {
     const start = (page - 1) * rowsPerPage;
@@ -238,7 +238,8 @@ export function PortfolioTable() {
     portfolios.length,
     onSearchChange,
     showSmallBalances,
-    hasSearchFilter,
+    onClear,
+    rowsPerPage,
   ]);
 
   const bottomContent = React.useMemo(() => {
@@ -280,11 +281,11 @@ export function PortfolioTable() {
     );
   }, [
     selectedKeys,
-    items.length,
     page,
     pages,
-    showSmallBalances,
-    hasSearchFilter,
+    onNextPage,
+    onPreviousPage,
+    filteredItems.length,
   ]);
 
   const renderCell = React.useCallback((data, columnKey) => {

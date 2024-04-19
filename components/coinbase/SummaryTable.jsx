@@ -46,7 +46,7 @@ export function SummaryTable() {
     }, {});
 
     return Object.values(aggregatedData);
-  }, [sortDescriptor, portfolios]);
+  }, [portfolios]);
 
   const sortedItems = React.useMemo(() => {
     return [...aggregatedItems].sort((a, b) => {
@@ -74,7 +74,7 @@ export function SummaryTable() {
     }
 
     return filteredPortfolios;
-  }, [sortedItems, showSmallBalances, filterValue]);
+  }, [sortedItems, showSmallBalances, filterValue, hasSearchFilter]);
 
   const filteredOrders = React.useMemo(() => {
     let portfoliosOrdersDict = {};
@@ -108,8 +108,6 @@ export function SummaryTable() {
       portfoliosOrdersDict[item.asset] = USDCFilteredProducts;
     });
 
-    console.log("Hey", portfoliosOrdersDict);
-
     return portfoliosOrdersDict;
   }, [sortedItems, products]);
 
@@ -136,8 +134,6 @@ export function SummaryTable() {
         };
       }
     });
-
-    console.log("Sum", summaryDict);
 
     return summaryDict;
   }, [sortedItems, filteredOrders]);
@@ -204,8 +200,8 @@ export function SummaryTable() {
     return (
       <div className="bg-cover bg-center bg-slate-100 rounded-lg w-full py-5 px-8">
         {filteredProducts[data.asset] ? (
-          filteredProducts[data.asset].map((item) => (
-            <div>
+          filteredProducts[data.asset].map((item, index) => (
+            <div key={index}>
               <div>Price: {item.price}</div>
               <div>Increment: {item.price_increment}</div>
               <div>% Change 24h: {item.price_percentage_change_24h}%</div>
@@ -235,8 +231,11 @@ export function SummaryTable() {
                 <p className="font-bold">Total</p>
               </div>
             </div>
-            {filteredOrders[data.asset].map((item) => (
-              <div className="flex flex-row w-full items-center gap-5">
+            {filteredOrders[data.asset].map((item, index) => (
+              <div
+                key={index}
+                className="flex flex-row w-full items-center gap-5"
+              >
                 <div className="flex-[1_1_0%] py-1">{item.trade_time}</div>
                 <div className="flex-none w-40">
                   {item.product_id} {item.side}

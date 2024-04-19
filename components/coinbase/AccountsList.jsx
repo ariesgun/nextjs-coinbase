@@ -1,12 +1,7 @@
 import { Card, CardBody, Skeleton } from "@nextui-org/react";
 
-interface Account {
-  name: string;
-  uuid: string;
-}
-
 export async function AccountsList() {
-  let accounts: Account[] = [];
+  let accounts = [];
   await fetch(process.env.URL + "/api/accounts", { method: "GET" })
     .then((res) => res.json())
     .then((data) => {

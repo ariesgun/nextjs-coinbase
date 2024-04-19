@@ -41,12 +41,6 @@ import {
   useDisclosure,
   Checkbox,
 } from "@nextui-org/react";
-import { MailIcon } from "./MailIcon.jsx";
-import { LockIcon } from "./LockIcon.jsx";
-import { PlusIcon } from "./PlusIcon";
-import { VerticalDotsIcon } from "./VerticalDotsIcon";
-import { SearchIcon } from "./SearchIcon";
-import { ChevronDownIcon } from "./ChevronDownIcon";
 import { columns, users, statusOptions } from "./data";
 import { capitalize } from "./utils";
 
@@ -61,6 +55,13 @@ const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
 // import {AcmeLogo} from "./AcmeLogo.jsx";
 
 import { useState, useEffect } from "react";
+import {
+  ChevronDownIcon,
+  LockIcon,
+  MailIcon,
+  PlusIcon,
+  SearchIcon,
+} from "lucide-react";
 
 const colors = [
   "default",
@@ -70,6 +71,18 @@ const colors = [
   "warning",
   "danger",
 ];
+
+type User = {
+  id: number;
+  name: string;
+  role: string;
+  team: string;
+  status: string;
+  age: string;
+  avatar: string;
+  email: string;
+  [key: string]: string | number;
+};
 
 export default function Home() {
   const [data, setData] = useState(null);
@@ -97,7 +110,7 @@ export default function Home() {
   const hasSearchFilter = Boolean(filterValue);
 
   const headerColumns = React.useMemo(() => {
-    if (visibleColumns === "all") return columns;
+    if (visibleColumns.has("all")) return columns;
 
     return columns.filter((column) =>
       Array.from(visibleColumns).includes(column.uid),
@@ -134,7 +147,7 @@ export default function Home() {
   }, [page, filteredItems, rowsPerPage]);
 
   const sortedItems = React.useMemo(() => {
-    return [...items].sort((a, b) => {
+    return [...items].sort((a: User, b: User) => {
       const first = a[sortDescriptor.column];
       const second = b[sortDescriptor.column];
       const cmp = first < second ? -1 : first > second ? 1 : 0;
@@ -143,7 +156,7 @@ export default function Home() {
     });
   }, [sortDescriptor, items]);
 
-  const renderCell = React.useCallback((user, columnKey) => {
+  const renderCell = React.useCallback((user: User, columnKey: string) => {
     const cellValue = user[columnKey];
 
     switch (columnKey) {
@@ -170,7 +183,16 @@ export default function Home() {
         return (
           <Chip
             className="capitalize"
-            color={statusColorMap[user.status]}
+            color={
+              statusColorMap[user.status as keyof typeof statusColorMap] as
+                | "default"
+                | "success"
+                | "danger"
+                | "warning"
+                | "primary"
+                | "secondary"
+                | undefined
+            }
             size="sm"
             variant="flat"
           >
@@ -183,7 +205,7 @@ export default function Home() {
             <Dropdown>
               <DropdownTrigger>
                 <Button isIconOnly size="sm" variant="light">
-                  <VerticalDotsIcon className="text-default-300" />
+                  {/* <VerticalDotsIcon className="text-default-300" /> */}
                 </Button>
               </DropdownTrigger>
               <DropdownMenu>
@@ -211,12 +233,12 @@ export default function Home() {
     }
   }, [page]);
 
-  const onRowsPerPageChange = React.useCallback((e) => {
-    setRowsPerPage(Number(e.target.value));
+  const onRowsPerPageChange = React.useCallback((e: any) => {
+    setRowsPerPage(Number(e.target?.value));
     setPage(1);
   }, []);
 
-  const onSearchChange = React.useCallback((value) => {
+  const onSearchChange = React.useCallback((value: any) => {
     if (value) {
       setFilterValue(value);
       setPage(1);
@@ -225,8 +247,7 @@ export default function Home() {
     }
   }, []);
 
-  const onCellAction = React.useCallback((value) => {
-    console.log(value);
+  const onCellAction = React.useCallback((value: any) => {
     setCellSelected(value);
   }, []);
 
@@ -334,7 +355,7 @@ export default function Home() {
     return (
       <div className="py-2 px-2 flex justify-between items-center">
         <span className="w-[30%] text-small text-default-400">
-          {selectedKeys === "all"
+          {selectedKeys.has("all")
             ? "All items selected"
             : `${selectedKeys.size} of ${filteredItems.length} selected`}
         </span>
