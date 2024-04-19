@@ -16,6 +16,7 @@ export default async function handler(req, res) {
     method: "GET",
     headers: myHeaders,
     redirect: "follow",
+    next: { revalidate: 60 },
   };
   await fetch("https://" + url + request_path, requestOptions)
     .then((res) => {

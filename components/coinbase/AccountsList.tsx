@@ -1,10 +1,17 @@
-"use client";
-
-import { useCoinbase } from "@/lib/coinbase";
 import { Card, CardBody, Skeleton } from "@nextui-org/react";
 
-export function AccountsList() {
-  const { accounts } = useCoinbase();
+interface Account {
+  name: string;
+  uuid: string;
+}
+
+export async function AccountsList() {
+  let accounts: Account[] = [];
+  await fetch(process.env.URL + "/api/accounts", { method: "GET" })
+    .then((res) => res.json())
+    .then((data) => {
+      accounts = data.result.portfolios;
+    });
 
   return (
     <>
@@ -15,12 +22,7 @@ export function AccountsList() {
             {accounts ? (
               accounts.map((account) => {
                 return (
-                  <Card
-                    key={account.uuid}
-                    className="py-3"
-                    isPressable
-                    onPress={() => console.log("item pressed")}
-                  >
+                  <Card key={account.uuid} className="py-3" isPressable>
                     <CardBody className="px-4">
                       <p className="text-md">{account.name}</p>
                       <p className="text-bold text-tiny text-default-400">

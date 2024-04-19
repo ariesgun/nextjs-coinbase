@@ -1,6 +1,4 @@
-// "use client";
-
-import React, { useEffect } from "react";
+import React from "react";
 import { Divider, useDisclosure } from "@nextui-org/react";
 import { Input, Link, Button } from "@nextui-org/react";
 
@@ -13,48 +11,12 @@ import {
   Checkbox,
 } from "@nextui-org/react";
 
-import { MailIcon } from "./MailIcon.jsx";
-import { LockIcon } from "./LockIcon.jsx";
-
-// import {AcmeLogo} from "./AcmeLogo.jsx";
-
-import { AccountsList } from "@/components/coinbase/AccountsList.jsx";
+import { AccountsList } from "@/components/coinbase/AccountsList.tsx";
 import { PortfolioTab } from "@/components/coinbase/PortfolioTab.jsx";
 import { CoinbaseNavbar } from "@/components/coinbase/Navbar.jsx";
 import { createClient } from "@/utils/supabase/server";
-// import { useCoinbase } from "@/lib/coinbase.js";
 
 export default async function Home() {
-  // const {
-  //   onAccountsFetched,
-  //   onPortfolioFetched,
-  //   onOrdersFetched,
-  //   onProductsFetched,
-  // } = useCoinbase();
-
-  // useEffect(() => {
-  //   fetch("/api/accounts")
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       onAccountsFetched(data.result.portfolios);
-  //     });
-  //   fetch("/api/portfolio")
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       onPortfolioFetched(data.result.spot_positions);
-  //     });
-  //   fetch("/api/orders")
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       onOrdersFetched(data.result);
-  //     });
-  //   fetch("/api/products/")
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       onProductsFetched(data.result.products);
-  //     });
-  // }, []);
-
   // const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const supabase = createClient();
   const { data, error } = await supabase.auth.getUser();

@@ -291,7 +291,7 @@ export function SummaryTable() {
       ) : (
         <div className="my-4 ">
           {Array.from({ length: 8 }, (_, index) => (
-            <div className="w-full flex items-center gap-5 my-5">
+            <div className="w-full flex items-center gap-5 my-5" key={index}>
               <div>
                 <Skeleton className="flex rounded-full w-20 h-20" />
               </div>

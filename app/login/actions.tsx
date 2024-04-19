@@ -42,5 +42,17 @@ export async function signup(formData: FormData) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/");
+  redirect("/coinbase");
+}
+
+export async function signout() {
+  const supabase = createClient();
+
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    redirect("/error");
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/coinbase");
 }

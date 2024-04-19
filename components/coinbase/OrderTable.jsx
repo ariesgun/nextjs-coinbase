@@ -18,7 +18,7 @@ import {
   TableRow,
 } from "@nextui-org/react";
 import { ChevronDownIcon, PlusIcon, SearchIcon } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import * as moment from "moment";
 
 const columns = [
@@ -43,6 +43,7 @@ const INITIAL_VISIBLE_COLUMNS = [
 
 export function OrderTable() {
   const { orders } = useCoinbase();
+
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [sortDescriptor, setSortDescriptor] = React.useState({
     column: "balance",

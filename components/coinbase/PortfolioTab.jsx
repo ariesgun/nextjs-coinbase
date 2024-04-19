@@ -4,8 +4,40 @@ import { Tab, Tabs } from "@nextui-org/react";
 import { PortfolioTable } from "./PortfolioTable";
 import { OrderTable } from "./OrderTable";
 import { SummaryTable } from "./SummaryTable";
+import { AccountsList } from "./AccountsList";
+import { useCoinbase } from "@/lib/coinbase";
+import { useEffect } from "react";
 
 export function PortfolioTab() {
+  const {
+    onAccountsFetched,
+    onPortfolioFetched,
+    onOrdersFetched,
+    onProductsFetched,
+  } = useCoinbase();
+
+  useEffect(() => {
+    fetch("/api/accounts")
+      .then((res) => res.json())
+      .then((data) => {
+        onAccountsFetched(data.result.portfolios);
+      });
+    fetch("/api/portfolio")
+      .then((res) => res.json())
+      .then((data) => {
+        onPortfolioFetched(data.result.spot_positions);
+      });
+    fetch("/api/orders")
+      .then((res) => res.json())
+      .then((data) => {
+        onOrdersFetched(data.result);
+      });
+    fetch("/api/products/")
+      .then((res) => res.json())
+      .then((data) => {
+        onProductsFetched(data.result.products);
+      });
+  }, []);
   return (
     <div className="flex w-full flex-col">
       <Tabs

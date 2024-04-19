@@ -1,5 +1,6 @@
 import { Divider, Link, Button } from "@nextui-org/react";
 import { createClient } from "@/utils/supabase/server";
+import { signout } from "@/app/login/actions";
 
 export async function CoinbaseNavbar() {
   const supabase = createClient();
@@ -46,7 +47,16 @@ export async function CoinbaseNavbar() {
               </Button>
             </>
           ) : (
-            <></>
+            <form action={signout}>
+              <Button
+                className="text-small"
+                color="secondary"
+                variant="flat"
+                type="submit"
+              >
+                Sign Out
+              </Button>
+            </form>
           )}
         </div>
       </div>
