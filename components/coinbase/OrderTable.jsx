@@ -1,3 +1,5 @@
+"use client";
+
 import { capitalize } from "@/app/coinbase/utils";
 import { useCoinbase } from "@/lib/coinbase";
 import {

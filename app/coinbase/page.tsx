@@ -1,7 +1,7 @@
-"use client";
+// "use client";
 
 import React, { useEffect } from "react";
-import { Divider } from "@nextui-org/react";
+import { Divider, useDisclosure } from "@nextui-org/react";
 import { Input, Link, Button } from "@nextui-org/react";
 
 import {
@@ -10,7 +10,6 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  useDisclosure,
   Checkbox,
 } from "@nextui-org/react";
 
@@ -21,73 +20,56 @@ import { LockIcon } from "./LockIcon.jsx";
 
 import { AccountsList } from "@/components/coinbase/AccountsList.jsx";
 import { PortfolioTab } from "@/components/coinbase/PortfolioTab.jsx";
-import { useCoinbase } from "@/lib/coinbase.js";
+import { CoinbaseNavbar } from "@/components/coinbase/Navbar.jsx";
+import { createClient } from "@/utils/supabase/server";
+// import { useCoinbase } from "@/lib/coinbase.js";
 
-export default function Home() {
-  const {
-    onAccountsFetched,
-    onPortfolioFetched,
-    onOrdersFetched,
-    onProductsFetched,
-  } = useCoinbase();
+export default async function Home() {
+  // const {
+  //   onAccountsFetched,
+  //   onPortfolioFetched,
+  //   onOrdersFetched,
+  //   onProductsFetched,
+  // } = useCoinbase();
 
-  useEffect(() => {
-    fetch("/api/accounts")
-      .then((res) => res.json())
-      .then((data) => {
-        onAccountsFetched(data.result.portfolios);
-      });
-    fetch("/api/portfolio")
-      .then((res) => res.json())
-      .then((data) => {
-        onPortfolioFetched(data.result.spot_positions);
-      });
-    fetch("/api/orders")
-      .then((res) => res.json())
-      .then((data) => {
-        onOrdersFetched(data.result);
-      });
-    fetch("/api/products/")
-      .then((res) => res.json())
-      .then((data) => {
-        onProductsFetched(data.result.products);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch("/api/accounts")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       onAccountsFetched(data.result.portfolios);
+  //     });
+  //   fetch("/api/portfolio")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       onPortfolioFetched(data.result.spot_positions);
+  //     });
+  //   fetch("/api/orders")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       onOrdersFetched(data.result);
+  //     });
+  //   fetch("/api/products/")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       onProductsFetched(data.result.products);
+  //     });
+  // }, []);
 
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  // const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const supabase = createClient();
+  const { data, error } = await supabase.auth.getUser();
+  let authenticated = false;
+
+  if (error || !data?.user) {
+    authenticated = false;
+  } else {
+    authenticated = true;
+  }
 
   return (
     <>
-      <div className="max-w-6xl mx-auto my-4">
-        <div className="flex place-content-between items-center">
-          <div className="flex h-5 items-center space-x-4 text-small">
-            <Link className="text-small" color="foreground" href="#">
-              Home
-            </Link>
-            <Divider orientation="vertical" />
-            <Link className="text-small" href="#">
-              Coinbase
-            </Link>
-            <Divider orientation="vertical" />
-            <Link className="text-small" color="foreground" href="#">
-              About
-            </Link>
-          </div>
-          <div className="space-x-6">
-            <Link className="text-small" href="#">
-              Login
-            </Link>
-            <Button
-              className="text-small"
-              as={Link}
-              color="primary"
-              href="#"
-              variant="flat"
-            >
-              Sign Up
-            </Button>
-          </div>
-        </div>
+      <div className="max-w-6xl my-4 mx-4 xl:mx-auto">
+        <CoinbaseNavbar />
 
         <Divider className="my-4" />
         <div className="space-y-1 mb-4">
@@ -98,10 +80,29 @@ export default function Home() {
         </div>
         <Divider className="mb-4" />
 
-        <AccountsList />
-        <PortfolioTab />
+        {authenticated ? (
+          <>
+            <AccountsList />
+            <PortfolioTab />
+          </>
+        ) : (
+          <>
+            <div className="bg-gray-100 py-16 px-4 sm:px-6 lg:px-8 lg:py-48">
+              <div className="relative max-w-lg mx-auto lg:max-w-7xl">
+                <div className="text-center">
+                  <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                    Welcome to Coinbase Dashboard
+                  </h2>
+                  <p className="mt-4 text-lg text-gray-500">
+                    Please login first.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
-      <Modal
+      {/* <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         backdrop="blur"
@@ -154,7 +155,7 @@ export default function Home() {
             </>
           )}
         </ModalContent>
-      </Modal>
+      </Modal> */}
     </>
   );
 }

@@ -1,3 +1,5 @@
+"use client";
+
 import { useCoinbase } from "@/lib/coinbase";
 import { Card, CardBody, Skeleton } from "@nextui-org/react";
 

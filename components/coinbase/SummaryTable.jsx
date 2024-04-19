@@ -1,3 +1,5 @@
+"use client";
+
 import { useCoinbase } from "@/lib/coinbase";
 import {
   Accordion,

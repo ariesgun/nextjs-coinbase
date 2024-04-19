@@ -1,3 +1,5 @@
+"use client";
+
 import { Tab, Tabs } from "@nextui-org/react";
 import { PortfolioTable } from "./PortfolioTable";
 import { OrderTable } from "./OrderTable";
