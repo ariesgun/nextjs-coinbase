@@ -37,7 +37,8 @@ export function PortfolioTab() {
       .then((data) => {
         onProductsFetched(data.result.products);
       });
-  });
+  }, []);
+
   return (
     <div className="flex w-full flex-col">
       <Tabs
