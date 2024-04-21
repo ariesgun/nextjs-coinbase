@@ -28,6 +28,10 @@ export default async function Home() {
     authenticated = true;
   }
 
+  if (authenticated) {
+    console.log("Authenticated");
+  }
+
   return (
     <>
       <div className="max-w-6xl my-4 mx-4 xl:mx-auto">

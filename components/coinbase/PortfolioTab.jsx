@@ -4,7 +4,7 @@ import { Tab, Tabs } from "@nextui-org/react";
 import { PortfolioTable } from "./PortfolioTable";
 import { OrderTable } from "./OrderTable";
 import { SummaryTable } from "./SummaryTable";
-import { AccountsList } from "./AccountsList";
+import { RecordTable } from "./RecordTable";
 import { useCoinbase } from "@/lib/coinbase";
 import { useEffect } from "react";
 
@@ -14,6 +14,7 @@ export function PortfolioTab() {
     onPortfolioFetched,
     onOrdersFetched,
     onProductsFetched,
+    onRecordsFetched,
   } = useCoinbase();
 
   useEffect(() => {
@@ -36,6 +37,12 @@ export function PortfolioTab() {
       .then((res) => res.json())
       .then((data) => {
         onProductsFetched(data.result.products);
+      });
+    fetch("/api/records/")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Hey", data.result);
+        onRecordsFetched(data.result);
       });
   }, []);
 
@@ -82,6 +89,16 @@ export function PortfolioTab() {
           }
         >
           <OrderTable />
+        </Tab>
+        <Tab
+          key="Records"
+          title={
+            <div className="flex items-center space-x-2">
+              <span>Records</span>
+            </div>
+          }
+        >
+          <RecordTable />
         </Tab>
       </Tabs>
     </div>

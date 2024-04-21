@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@nextui-org/react": "^2.2.9",
+    "@prisma/client": "^5.12.1",
     "@radix-ui/react-slot": "^1.0.2",
     "@react-stately/data": "^3.11.2",
     "@supabase/ssr": "^0.3.0",
