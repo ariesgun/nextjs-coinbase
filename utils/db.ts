@@ -6,7 +6,7 @@ export async function get() {
   const allUsers = await prisma.account.findMany();
   const allRecords = await prisma.record.findMany();
 
-  console.log(allUsers, allRecords);
+  //   console.log(allUsers, allRecords);
 
   await prisma.$disconnect();
 }
@@ -23,7 +23,7 @@ export async function addRecord(user, data: any) {
     },
   });
 
-  console.log(record);
+  //   console.log(record);
 
   await prisma.$disconnect();
 }
@@ -41,7 +41,7 @@ export async function getRecords(user) {
     // },
   });
 
-  console.log("Records: ", records);
+  //   console.log("Records: ", records);
 
   await prisma.$disconnect();
 
@@ -62,23 +62,23 @@ export async function updateRecord(user, data: any) {
     },
   });
 
-  console.log(record);
+  //   console.log(record);
 
   await prisma.$disconnect();
 }
 
-export async function deleteRecord(user, data: any) {
+export async function deleteRecord(user, recordId: any) {
   const account: Account = await findUser(user);
 
   const prisma = new PrismaClient();
 
   const deletedRecord = await prisma.record.delete({
     where: {
-      id: data.id,
+      id: recordId,
     },
   });
 
-  console.log("Deleted: ", deletedRecord);
+  //   console.log("Deleted: ", deletedRecord);
 
   await prisma.$disconnect();
 }

@@ -15,11 +15,9 @@ export default function createClient(
     {
       cookies: {
         get(name: string) {
-          console.log("Hey", req);
           return req.cookies[name];
         },
         set(name: string, value: string, options: CookieOptions) {
-          console.log("Res", res, name, value);
           res.appendHeader("Set-Cookie", serialize(name, value, options));
         },
         remove(name: string, options: CookieOptions) {

@@ -28,7 +28,7 @@ model Record {
   asset       String
   action      Action      @default(DEPOSIT)
   amount      Int
-  datetime    DateTime
+  timestamp   DateTime
   account     Account     @relation(fields: [accountId], references: [id])
   accountId   Int         
 }

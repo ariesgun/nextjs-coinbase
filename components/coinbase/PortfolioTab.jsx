@@ -41,7 +41,6 @@ export function PortfolioTab() {
     fetch("/api/records/")
       .then((res) => res.json())
       .then((data) => {
-        console.log("Hey", data.result);
         onRecordsFetched(data.result);
       });
   }, []);

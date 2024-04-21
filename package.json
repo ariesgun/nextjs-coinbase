@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@nextui-org/date-input": "^2.0.3",
+    "@nextui-org/date-picker": "^2.0.6",
     "@nextui-org/react": "^2.2.9",
     "@prisma/client": "^5.12.1",
     "@radix-ui/react-slot": "^1.0.2",

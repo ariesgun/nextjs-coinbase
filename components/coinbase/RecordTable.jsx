@@ -10,7 +10,15 @@ import {
   DropdownTrigger,
   Image,
   Input,
+  Link,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   Pagination,
+  Select,
+  SelectItem,
   Table,
   TableBody,
   TableCell,
@@ -19,11 +27,23 @@ import {
   TableRow,
   useDisclosure,
 } from "@nextui-org/react";
-import { ChevronDownIcon, DotIcon, EditIcon, SearchIcon } from "lucide-react";
+import {
+  ChevronDownIcon,
+  DotIcon,
+  EditIcon,
+  LockIcon,
+  MailIcon,
+  PlusIcon,
+  SearchIcon,
+} from "lucide-react";
+import { DateInput } from "@nextui-org/react";
+import { CalendarDate } from "@internationalized/date";
 import { CircleXIcon } from "@/app/ui/CircleXIcon";
 
 import { Checkbox } from "@nextui-org/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { createRecord, onDeleteRecord, onEditRecord } from "./action";
+import { useFormState } from "react-dom";
 
 const columns = [
   { name: "ASSET", uid: "asset", sortable: true },
@@ -42,7 +62,14 @@ const INITIAL_VISIBLE_COLUMNS = [
 ];
 
 export function RecordTable() {
-  const { records } = useCoinbase();
+  const { records, setRecords, onRecordsFetched } = useCoinbase();
+
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+
+  const [editRecord, setEditRecord] = useState(null);
+  const [editState, editRecordAction] = useFormState(onEditRecord, 0);
+  const [addState, addRecordAction] = useFormState(createRecord, 0);
+  const [deleteState, deleteRecordAction] = useFormState(onDeleteRecord, 0);
 
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [sortDescriptor, setSortDescriptor] = React.useState({
@@ -53,15 +80,11 @@ export function RecordTable() {
     new Set(INITIAL_VISIBLE_COLUMNS),
   );
 
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
   const [filterValue, setFilterValue] = React.useState("");
 
   const hasSearchFilter = Boolean(filterValue);
-  const [rowsPerPage, setRowsPerPage] = React.useState(15);
+  const [rowsPerPage, setRowsPerPage] = React.useState(30);
   const [page, setPage] = React.useState(1);
-
-  const [showSmallBalances, setShowSmallBalances] = React.useState(false);
 
   const sortedItems = React.useMemo(() => {
     return [...records].sort((a, b) => {
@@ -71,7 +94,7 @@ export function RecordTable() {
 
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
-  }, [sortDescriptor, records]);
+  }, [sortDescriptor, records, editState, addState, deleteState]);
 
   const filteredItems = React.useMemo(() => {
     let filteredPortfolios = [...sortedItems];
@@ -83,7 +106,7 @@ export function RecordTable() {
     }
 
     return filteredPortfolios;
-  }, [sortedItems, showSmallBalances, filterValue, hasSearchFilter]);
+  }, [sortedItems, filterValue, hasSearchFilter]);
 
   const items = React.useMemo(() => {
     const start = (page - 1) * rowsPerPage;
@@ -129,7 +152,6 @@ export function RecordTable() {
   }, []);
 
   const onCellAction = React.useCallback((value) => {
-    // console.log(value);
     setCellSelected(value);
   }, []);
 
@@ -137,6 +159,38 @@ export function RecordTable() {
     setFilterValue("");
     setPage(1);
   }, []);
+
+  const onCreated = () => {
+    onClose();
+  };
+
+  const onAddNew = () => {
+    setEditRecord(null);
+    onOpenChange();
+  };
+
+  useEffect(() => {
+    if (editState !== 0 || addState !== 0 || deleteState !== 0) {
+      fetch("/api/records/")
+        .then((res) => res.json())
+        .then((data) => {
+          onRecordsFetched(data.result);
+        });
+    }
+  }, [editState, addState, deleteState]);
+
+  const onRecordDeleted = () => {
+    onClose();
+  };
+
+  const onEditRecordPress = (e) => {
+    const curRecord = records.find(
+      (record) => record.id === parseInt(e.target.value),
+    );
+
+    setEditRecord(curRecord);
+    onOpenChange();
+  };
 
   const topContent = React.useMemo(() => {
     return (
@@ -155,37 +209,13 @@ export function RecordTable() {
             />
           </div>
           <div className="flex gap-5 items-center">
-            <Checkbox
-              size="sm"
-              isSelected={showSmallBalances}
-              onValueChange={setShowSmallBalances}
+            <Button
+              color="primary"
+              onPress={onAddNew}
+              endContent={<PlusIcon />}
             >
-              {"Show small balances (< $0.01)"}
-            </Checkbox>
-            <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
-                <Button
-                  endContent={<ChevronDownIcon className="text-small" />}
-                  variant="flat"
-                >
-                  Columns
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Table Columns"
-                closeOnSelect={false}
-                selectedKeys={visibleColumns}
-                selectionMode="multiple"
-                onSelectionChange={setVisibleColumns}
-              >
-                {columns.map((column) => (
-                  <DropdownItem key={column.uid} className="capitalize">
-                    {capitalize(column.name)}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
+              Add New
+            </Button>
           </div>
         </div>
         <div className="flex justify-between items-center">
@@ -199,9 +229,9 @@ export function RecordTable() {
               onChange={onRowsPerPageChange}
               value={rowsPerPage}
             >
-              <option value="5">5</option>
               <option value="15">15</option>
               <option value="30">30</option>
+              <option value="50">50</option>
             </select>
           </label>
         </div>
@@ -213,7 +243,6 @@ export function RecordTable() {
     onRowsPerPageChange,
     records.length,
     onSearchChange,
-    showSmallBalances,
     onClear,
     rowsPerPage,
   ]);
@@ -264,7 +293,7 @@ export function RecordTable() {
     filteredItems.length,
   ]);
 
-  const renderCell = React.useCallback((data, columnKey) => {
+  const renderCell = (data, columnKey) => {
     const cellValue = data[columnKey];
 
     switch (columnKey) {
@@ -284,58 +313,244 @@ export function RecordTable() {
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
-            <Button isIconOnly size="sm" variant="light">
-              <EditIcon className="text-slate-400" />
-            </Button>
-            <Button isIconOnly size="sm" variant="light">
-              <CircleXIcon className="text-slate-400" />
-            </Button>
+            <div>
+              <Button
+                isIconOnly
+                size="sm"
+                variant="light"
+                type="submit"
+                value={data.id}
+                onPress={onEditRecordPress}
+              >
+                <EditIcon className="text-slate-400" />
+              </Button>
+            </div>
+            <form action={deleteRecordAction}>
+              <input hidden defaultValue={data.id} name="id" />
+              <Button
+                isIconOnly
+                size="sm"
+                variant="light"
+                type="submit"
+                onPress={onRecordDeleted}
+              >
+                <CircleXIcon className="text-slate-400" />
+              </Button>
+            </form>
           </div>
         );
       default:
         return cellValue;
     }
-  }, []);
+  };
 
   return (
-    <Table
-      aria-label="Example table with custom cells, pagination and sorting"
-      isHeaderSticky
-      bottomContent={bottomContent}
-      bottomContentPlacement="outside"
-      classNames={{
-        wrapper: "max-h-[640px]",
-      }}
-      selectedKeys={selectedKeys}
-      selectionMode="single"
-      sortDescriptor={sortDescriptor}
-      topContent={topContent}
-      topContentPlacement="outside"
-      onSelectionChange={setSelectedKeys}
-      onSortChange={setSortDescriptor}
-    >
-      <TableHeader columns={headerColumns}>
-        {(column) => (
-          <TableColumn
-            key={column.uid}
-            align={column.uid === "actions" ? "center" : "start"}
-            allowsSorting={column.sortable}
-          >
-            {column.name}
-          </TableColumn>
-        )}
-      </TableHeader>
-      <TableBody emptyContent={"No data found"} items={items}>
-        {(item) => (
-          <TableRow key={item.account_uuid}>
-            {(columnKey) => (
-              <TableCell className="py-2">
-                {renderCell(item, columnKey)}
-              </TableCell>
+    <>
+      <Table
+        aria-label="Example table with custom cells, pagination and sorting"
+        isHeaderSticky
+        bottomContent={bottomContent}
+        bottomContentPlacement="outside"
+        classNames={{
+          wrapper: "max-h-[640px]",
+        }}
+        selectedKeys={selectedKeys}
+        selectionMode="single"
+        sortDescriptor={sortDescriptor}
+        topContent={topContent}
+        topContentPlacement="outside"
+        onSelectionChange={setSelectedKeys}
+        onSortChange={setSortDescriptor}
+      >
+        <TableHeader columns={headerColumns}>
+          {(column) => (
+            <TableColumn
+              key={column.uid}
+              align={column.uid === "actions" ? "center" : "start"}
+              allowsSorting={column.sortable}
+            >
+              {column.name}
+            </TableColumn>
+          )}
+        </TableHeader>
+        <TableBody emptyContent={"No data found"} items={items}>
+          {(item) => {
+            return (
+              <TableRow key={item.account_uuid}>
+                {(columnKey) => (
+                  <TableCell className="py-2">
+                    {renderCell(item, columnKey)}
+                  </TableCell>
+                )}
+              </TableRow>
+            );
+          }}
+        </TableBody>
+      </Table>
+      {editRecord ? (
+        <Modal
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          backdrop="blur"
+          placement="top-center"
+        >
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  Update record
+                </ModalHeader>
+                <ModalBody className="px-0">
+                  <form
+                    action={editRecordAction}
+                    className="flex flex-1 flex-col gap-3 px-6 py-2"
+                  >
+                    <Input
+                      autoFocus
+                      label="Asset"
+                      name="asset"
+                      placeholder="Enter asset name"
+                      variant="bordered"
+                      defaultValue={editRecord.asset}
+                    />
+                    <input hidden name="id" value={editRecord.id} readOnly />
+                    <Input
+                      label="Amount"
+                      name="amount"
+                      placeholder="Enter the amount"
+                      variant="bordered"
+                      defaultValue={editRecord.amount}
+                    />
+                    <Select
+                      label="Type"
+                      name="action"
+                      placeholder="Deposit/ Withdraw"
+                      variant={"bordered"}
+                      defaultSelectedKeys={[editRecord.action]}
+                    >
+                      <SelectItem key={"DEPOSIT"} value={"DEPOSIT"}>
+                        Deposit
+                      </SelectItem>
+                      <SelectItem key={"WITHDRAW"} value={"WITHDRAW"}>
+                        Withdraw
+                      </SelectItem>
+                    </Select>
+                    <DateInput
+                      name="timestamp"
+                      variant={"bordered"}
+                      label={"Timestamp"}
+                      defaultValue={
+                        new CalendarDate(
+                          new Date(editRecord.timestamp).getFullYear(),
+                          new Date(editRecord.timestamp).getMonth() + 1,
+                          new Date(editRecord.timestamp).getDate(),
+                        )
+                      }
+                    />
+                    <div className="flex flex-row gap-2 px-0 py-4 justify-end">
+                      <Button color="danger" variant="flat" onPress={onClose}>
+                        Cancel
+                      </Button>
+                      <Button color="primary" type="submit" onPress={onCreated}>
+                        Update
+                      </Button>
+                    </div>
+                  </form>
+                </ModalBody>
+              </>
             )}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+          </ModalContent>
+        </Modal>
+      ) : (
+        <Modal
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          backdrop="blur"
+          placement="top-center"
+        >
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  Add record
+                </ModalHeader>
+                <ModalBody className="px-0">
+                  <form
+                    action={addRecordAction}
+                    className="flex flex-1 flex-col gap-3 px-6 py-2"
+                  >
+                    <Input
+                      autoFocus
+                      //   endContent={
+                      //     <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                      //   }
+                      label="Asset"
+                      name="asset"
+                      placeholder="Enter asset name"
+                      variant="bordered"
+                    />
+                    <Input
+                      //   endContent={
+                      //     <LockIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                      //   }
+                      label="Amount"
+                      name="amount"
+                      placeholder="Enter the amount"
+                      variant="bordered"
+                    />
+                    <Select
+                      label="Type"
+                      name="action"
+                      placeholder="Deposit/ Withdraw"
+                      variant={"bordered"}
+                    >
+                      <SelectItem key={"deposit"} value={"DEPOSIT"}>
+                        Deposit
+                      </SelectItem>
+                      <SelectItem key={"withdraw"} value={"WITHDRAW"}>
+                        Withdraw
+                      </SelectItem>
+                    </Select>
+                    <DateInput
+                      name="timestamp"
+                      variant={"bordered"}
+                      label={"Timestamp"}
+                      defaultValue={
+                        new CalendarDate(
+                          new Date().getFullYear(),
+                          new Date().getMonth() + 1,
+                          new Date().getDate(),
+                        )
+                      }
+                      placeholderValue={new CalendarDate(1995, 11, 6)}
+                    />
+                    {/* <div className="flex py-2 px-1 justify-between">
+                  <Checkbox
+                    classNames={{
+                      label: "text-small",
+                    }}
+                  >
+                    Remember me
+                  </Checkbox>
+                  <Link color="primary" href="#" size="sm">
+                    Forgot password?
+                  </Link>
+                </div> */}
+                    <div className="flex flex-row gap-2 px-0 py-4 justify-end">
+                      <Button color="danger" variant="flat" onPress={onClose}>
+                        Cancel
+                      </Button>
+                      <Button color="primary" type="submit" onPress={onCreated}>
+                        Create
+                      </Button>
+                    </div>
+                  </form>
+                </ModalBody>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      )}
+    </>
   );
 }
