@@ -10,9 +10,7 @@ import {
 } from "@nextui-org/react";
 import React from "react";
 
-export function SummaryTable() {
-  const { orders, portfolios, products } = useCoinbase();
-
+export function SummaryTable({ orders, portfolios, products }) {
   const [sortDescriptor, setSortDescriptor] = React.useState({
     column: "asset",
     direction: "ascending",

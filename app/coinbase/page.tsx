@@ -3,6 +3,7 @@ import { Divider } from "@nextui-org/react";
 
 import { AccountsList } from "@/components/coinbase/AccountsList.jsx";
 import { PortfolioTab } from "@/components/coinbase/PortfolioTab.jsx";
+import { CoinbaseTabs } from "@/components/coinbase/CoinbaseTabs.jsx";
 import { CoinbaseNavbar } from "@/components/coinbase/Navbar.jsx";
 import { createClient } from "@/utils/supabase/server";
 
@@ -34,7 +35,7 @@ export default async function Home() {
         {authenticated ? (
           <>
             <AccountsList />
-            <PortfolioTab />
+            <CoinbaseTabs />
           </>
         ) : (
           <>

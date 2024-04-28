@@ -61,8 +61,8 @@ const INITIAL_VISIBLE_COLUMNS = [
   "actions",
 ];
 
-export function RecordTable({ records }) {
-  const { onRecordsFetched } = useCoinbase();
+export function CoinbaseTable() {
+  const { records, setRecords, onRecordsFetched } = useCoinbase();
 
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
@@ -307,9 +307,7 @@ export function RecordTable({ records }) {
       case "timestamp":
         return (
           <div className="flex gap-x-2">
-            <p className="text-bold text-small capitalize">
-              {data.timestamp.toLocaleString()}
-            </p>
+            <p className="text-bold text-small capitalize">{data.timestamp}</p>
           </div>
         );
       case "actions":
@@ -483,18 +481,12 @@ export function RecordTable({ records }) {
                   >
                     <Input
                       autoFocus
-                      //   endContent={
-                      //     <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                      //   }
                       label="Asset"
                       name="asset"
                       placeholder="Enter asset name"
                       variant="bordered"
                     />
                     <Input
-                      //   endContent={
-                      //     <LockIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                      //   }
                       label="Amount"
                       name="amount"
                       placeholder="Enter the amount"
@@ -526,18 +518,6 @@ export function RecordTable({ records }) {
                       }
                       placeholderValue={new CalendarDate(1995, 11, 6)}
                     />
-                    {/* <div className="flex py-2 px-1 justify-between">
-                  <Checkbox
-                    classNames={{
-                      label: "text-small",
-                    }}
-                  >
-                    Remember me
-                  </Checkbox>
-                  <Link color="primary" href="#" size="sm">
-                    Forgot password?
-                  </Link>
-                </div> */}
                     <div className="flex flex-row gap-2 px-0 py-4 justify-end">
                       <Button color="danger" variant="flat" onPress={onClose}>
                         Cancel

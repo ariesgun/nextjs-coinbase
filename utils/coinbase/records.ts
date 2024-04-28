@@ -1,10 +1,11 @@
-import { getRecords } from "../../utils/db.ts";
-import createClient from "../../utils/supabase/api.ts";
+import { readRecords } from "../db";
+import { createClient } from "../supabase/server";
 
-export default async function handler(req, res) {
+export default async function getRecords() {
   let result = [];
 
-  const supabase = createClient(req, res);
+  const supabase = createClient();
+
   const { data, error } = await supabase.auth.getUser();
 
   if (error || !data?.user) {
@@ -14,7 +15,7 @@ export default async function handler(req, res) {
       //   throw new Error("User email or id is undefined");
     }
 
-    await getRecords(data.user)
+    await readRecords(data?.user)
       .then((res) => {
         if (!res.ok) {
           console.error(res.statusText);
@@ -25,6 +26,6 @@ export default async function handler(req, res) {
         console.error("Error ", error);
       });
 
-    res.status(200).json({ result });
+    return result;
   }
 }

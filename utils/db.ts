@@ -28,7 +28,7 @@ export async function addRecord(user, data: any) {
   await prisma.$disconnect();
 }
 
-export async function getRecords(user) {
+export async function readRecords(user) {
   const account: Account = await findUser(user);
 
   const prisma = new PrismaClient();

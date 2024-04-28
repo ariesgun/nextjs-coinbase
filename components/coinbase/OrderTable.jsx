@@ -41,9 +41,7 @@ const INITIAL_VISIBLE_COLUMNS = [
   "timestamp",
 ];
 
-export function OrderTable() {
-  const { orders } = useCoinbase();
-
+export function OrderTable({ orders }) {
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [sortDescriptor, setSortDescriptor] = React.useState({
     column: "balance",

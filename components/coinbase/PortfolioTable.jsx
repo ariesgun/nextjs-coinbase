@@ -37,9 +37,7 @@ const INITIAL_VISIBLE_COLUMNS = [
   "cost",
 ];
 
-export function PortfolioTable() {
-  const { portfolios } = useCoinbase();
-
+export function PortfolioTable({ portfolios }) {
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [sortDescriptor, setSortDescriptor] = React.useState({
     column: "asset",
